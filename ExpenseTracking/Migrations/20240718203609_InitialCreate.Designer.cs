@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpenseTracking.Migrations
 {
     [DbContext(typeof(ExpenseDbContext))]
-    [Migration("20240718144828_update1")]
-    partial class update1
+    [Migration("20240718203609_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,12 +64,33 @@ namespace ExpenseTracking.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Transport"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Utilities"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Entertainment"
+                        });
                 });
 
             modelBuilder.Entity("ExpenseTracking.Models.Expense", b =>

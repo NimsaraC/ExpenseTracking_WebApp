@@ -33,40 +33,53 @@ namespace ExpenseTracking.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            var categories = GetCategoriesByUserIdAsync(id);
-            var expenses = GetExpensesByUserIdAsync(id);
-            var budgets = GetBudgetsByUserIdAsync(id);
-
-            var userDashboard = new UserDashboard
-            {
-                User = user,
-                Categories = await categories,
-                Expenses = await expenses,
-                Budgets = await budgets
-            };
-
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
 
+            var categories = await GetCategoriesByUserIdAsync(id);
+            var expenses = await GetExpensesByUserIdAsync(id);
+            var budgets = await GetBudgetsByUserIdAsync(id);
+            
+
+            var userDashboard = new UserDashboard
+            {
+                User = user,
+                Categories = categories,
+                Expenses = expenses,
+                Budgets = budgets,
+            };
+
             return View(userDashboard);
         }
 
+
         private async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(int? userId)
         {
-            return await _context.Categories.Where(r => r.UserId == userId.ToString()).ToListAsync();
+            if (userId == null)
+                return Enumerable.Empty<Category>();
+
+            return await _context.Categories.Where(r => r.UserId == userId.ToString() || r.UserId == null).ToListAsync();
         }
+
         private async Task<IEnumerable<Expense>> GetExpensesByUserIdAsync(int? userId)
         {
+            if (userId == null)
+                return Enumerable.Empty<Expense>();
+
             return await _context.Expenses.Where(r => r.UserID == userId).ToListAsync();
         }
+
         private async Task<IEnumerable<Budget>> GetBudgetsByUserIdAsync(int? userId)
         {
+            if (userId == null)
+                return Enumerable.Empty<Budget>();
+
             return await _context.Budgets.Where(r => r.UserId == userId).ToListAsync();
         }
+
 
         public IActionResult Create()
         {

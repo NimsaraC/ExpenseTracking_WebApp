@@ -1,4 +1,5 @@
-﻿@model ExpenseTracking.Models.User
+﻿@using System.Security.Claims
+@model ExpenseTracking.Models.UserDashboard
 
 @{
     ViewData["Title"] = "Details";
@@ -10,39 +11,121 @@
     <h4>User</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Name)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Email)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Email)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Password)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Password)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Phone)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Phone)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Currency)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Currency)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Currency)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Currency)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.User.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<h3>Expenses</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model?.Expenses ?? Enumerable.Empty<Expense>())
+        {
+            <tr>
+                <td>@item.CategoryId</td>
+                <td>@item.Date</td>
+                <td>@item.Description</td>
+                <td>@item.Amount</td>
+                <td>
+                    <a asp-controller="Expenses" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Expenses" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-controller="Expenses" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Budgets</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Period</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model?.Budgets ?? Enumerable.Empty<Budget>())
+        {
+            <tr>
+                <td>@item.CategoryId</td>
+                <td>@item.Amount</td>
+                <td>@item.Period</td>
+                <td>
+                    <a asp-controller="Budgets" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Budgets" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-controller="Budgets" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Categories</h3>
+<div>
+    <a asp-controller="Categories" asp-action="Create">Delete</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model?.Categories ?? Enumerable.Empty<Category>())
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-controller="Categories" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Categories" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

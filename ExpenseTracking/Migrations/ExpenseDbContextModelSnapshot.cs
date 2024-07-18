@@ -61,12 +61,33 @@ namespace ExpenseTracking.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Transport"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Utilities"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Entertainment"
+                        });
                 });
 
             modelBuilder.Entity("ExpenseTracking.Models.Expense", b =>
