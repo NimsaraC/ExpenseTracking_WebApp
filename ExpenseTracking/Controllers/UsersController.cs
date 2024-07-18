@@ -6,26 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracking.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace ExpenseTracking.Controllers
 {
-    public class AccountController : Controller
+    public class UsersController : Controller
     {
         private readonly ExpenseDbContext _context;
 
-        public AccountController(ExpenseDbContext context)
+        public UsersController(ExpenseDbContext context)
         {
             _context = context;
         }
 
-        // GET: Account
+        // GET: Users
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
-        // GET: Account/Details/5
-        public async Task<IActionResult> Details(string id)
+        // GET: Users/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -42,30 +45,37 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // GET: Account/Create
+        // GET: Users/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Account/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Email,Password,Phone,Currency")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(user);
+                    await _context.SaveChangesAsync();
+                    ModelState.Clear();
+                    ViewBag.Message = $"{user.Name} registered successfully. Please log in.";
+                }
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Please enter a unique email and password.");
+                    return View(user);
+                }
+                return View();
             }
             return View(user);
         }
 
-        // GET: Account/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -80,12 +90,12 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // POST: Account/Edit/5
+        // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Email,Password,Phone,Currency")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,Password,Phone,Currency")] User user)
         {
             if (id != user.Id)
             {
@@ -115,8 +125,8 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // GET: Account/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        // GET: Users/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -133,10 +143,10 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // POST: Account/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user != null)
@@ -148,9 +158,43 @@ namespace ExpenseTracking.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(string id)
+        private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLogin userLogin)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == userLogin.Email && x.Password == userLogin.Password);
+                if (user != null)
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Email),
+                        new Claim("Name", user.Name),
+                        new Claim(ClaimTypes.Role, "User"),
+                    };
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    return RedirectToAction("Details", "Users", new { area = "", id = user.Id });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Email or Password is not correct.");
+                    ViewBag.Message = $"Email or Password is not correct.";
+                }
+            }
+            return View();
         }
     }
 }
