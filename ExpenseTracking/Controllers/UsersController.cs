@@ -21,13 +21,11 @@ namespace ExpenseTracking.Controllers
             _context = context;
         }
 
-        // GET: Users
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
-        // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,15 +35,39 @@ namespace ExpenseTracking.Controllers
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
+            var categories = GetCategoriesByUserIdAsync(id);
+            var expenses = GetExpensesByUserIdAsync(id);
+            var budgets = GetBudgetsByUserIdAsync(id);
+
+            var userDashboard = new UserDashboard
+            {
+                User = user,
+                Categories = await categories,
+                Expenses = await expenses,
+                Budgets = await budgets
+            };
+
             if (user == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(userDashboard);
         }
 
-        // GET: Users/Create
+        private async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(int? userId)
+        {
+            return await _context.Categories.Where(r => r.UserId == userId.ToString()).ToListAsync();
+        }
+        private async Task<IEnumerable<Expense>> GetExpensesByUserIdAsync(int? userId)
+        {
+            return await _context.Expenses.Where(r => r.UserID == userId).ToListAsync();
+        }
+        private async Task<IEnumerable<Budget>> GetBudgetsByUserIdAsync(int? userId)
+        {
+            return await _context.Budgets.Where(r => r.UserId == userId).ToListAsync();
+        }
+
         public IActionResult Create()
         {
             return View();
@@ -74,7 +96,6 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,9 +111,6 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,Password,Phone,Currency")] User user)
@@ -125,7 +143,6 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,7 +160,6 @@ namespace ExpenseTracking.Controllers
             return View(user);
         }
 
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
