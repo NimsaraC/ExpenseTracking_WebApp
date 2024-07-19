@@ -16,7 +16,7 @@
             @{
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 <div class="form-group">
-                    <input asp-for="Budget.UserId" class="form-control" value="@userId"/>
+                    <input type="hidden" asp-for="Budget.UserId" class="form-control" value="@userId"/>
                     <span asp-validation-for="Budget.UserId" class="text-danger"></span>
                 </div>
             }
@@ -35,7 +35,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="Budget.Period" class="control-label"></label>
-                <input asp-for="Budget.Period" class="form-control" />
+                <select asp-for="Budget.Period" class="form-control" >
+                    <option value="">-- Select Period --</option>
+                    <option value="Month">This Month</option>
+                    <option value="Week">This Week</option>
+                </select>
                 <span asp-validation-for="Budget.Period" class="text-danger"></span>
             </div>
             <div class="form-group">
