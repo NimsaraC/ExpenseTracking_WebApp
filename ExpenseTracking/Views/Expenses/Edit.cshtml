@@ -16,31 +16,40 @@
             @{
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 <div class="form-group">
-                    <input type="hidden" asp-for="Budget.UserId" class="form-control" value="@userId" />
-                    <span asp-validation-for="Budget.UserId" class="text-danger"></span>
+                    <input type="hidden" asp-for="Expense.UserID" class="form-control" value="@userId" />
+                    <span asp-validation-for="Expense.UserID" class="text-danger"></span>
                 </div>
             }
-
             <div class="form-group">
-                <label asp-for="Budget.CategoryId" class="control-label"></label>
-                <select asp-for="Budget.CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                <label asp-for="Expense.Type" class="control-lable"></label>
+                <select asp-for="Expense.Type" class="form-control">
+                    <option value="">-- Select Type --</option>
+                    <option value="Expences">Expences</option>
+                    <option value="Income">Income</option>
+                </select>
+                <span asp-validation-for="Expense.Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Expense.Amount" class="control-label"></label>
+                <input asp-for="Expense.Amount" class="form-control" />
+                <span asp-validation-for="Expense.Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Expense.CategoryName" class="control-label"></label>
+                <select asp-for="Expense.CategoryName" class="form-control" asp-items="@(new SelectList(Model.Categories, "Name", "Name"))">
                     <option value="">Select a category</option>
                 </select>
-                <span asp-validation-for="Budget.CategoryId" class="text-danger"></span>
+                <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Budget.Amount" class="control-label"></label>
-                <input asp-for="Budget.Amount" class="form-control" />
-                <span asp-validation-for="Budget.Amount" class="text-danger"></span>
+                <label asp-for="Expense.Date" class="control-label"></label>
+                <input asp-for="Expense.Date" class="form-control" />
+                <span asp-validation-for="Expense.Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Budget.Period" class="control-label"></label>
-                <select asp-for="Budget.Period" class="form-control">
-                    <option value="">-- Select Period --</option>
-                    <option value="Month">This Month</option>
-                    <option value="Week">This Week</option>
-                </select>
-                <span asp-validation-for="Budget.Period" class="text-danger"></span>
+                <label asp-for="Expense.Description" class="control-label"></label>
+                <input asp-for="Expense.Description" class="form-control" />
+                <span asp-validation-for="Expense.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

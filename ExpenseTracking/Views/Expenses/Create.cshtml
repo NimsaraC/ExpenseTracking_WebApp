@@ -36,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Expense.CategoryName" class="control-label"></label>
-                <select asp-for="Expense.CategoryName" class="form-control" asp-items="@(new SelectList(Model.Categories, "Name"))">
+                <select asp-for="Expense.CategoryName" class="form-control" asp-items="@(new SelectList(Model.Categories, "Name", "Name"))">
                     <option value="">Select a category</option>
                 </select>
                 <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>

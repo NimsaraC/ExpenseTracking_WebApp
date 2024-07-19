@@ -33,9 +33,6 @@ namespace ExpenseTracking.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Period")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -60,6 +57,10 @@ namespace ExpenseTracking.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -71,22 +72,50 @@ namespace ExpenseTracking.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Food"
+                            Name = "Food",
+                            Type = "Expenses"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Transport"
+                            Name = "Transport",
+                            Type = "Expenses"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Utilities"
+                            Name = "Utilities",
+                            Type = "Expenses"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Entertainment"
+                            Name = "Entertainment",
+                            Type = "Expenses"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Rental",
+                            Type = "Income"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Salary",
+                            Type = "Income"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Others",
+                            Type = "Income"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Others",
+                            Type = "Expenses"
                         });
                 });
 
@@ -101,13 +130,18 @@ namespace ExpenseTracking.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -126,10 +160,6 @@ namespace ExpenseTracking.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -150,6 +180,16 @@ namespace ExpenseTracking.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "email@gmail.com",
+                            Name = "User",
+                            Password = "1234",
+                            Phone = "119"
+                        });
                 });
 #pragma warning restore 612, 618
         }

@@ -27,6 +27,10 @@ namespace ExpenseTracking.Models
                 new Category { Id = 7, Name = "Others", Type = "Income" },
                 new Category { Id = 8, Name = "Others", Type = "Expenses" }
             );
+
+            modelBuilder.Entity<User>().HasData(
+                new User {Id= 1, Name = "User", Email = "email@gmail.com", Password = "1234", Phone = "119"}
+            );
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
