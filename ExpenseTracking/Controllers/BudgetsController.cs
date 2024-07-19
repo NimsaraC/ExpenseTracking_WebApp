@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracking.Models;
+using System.Security.Claims;
 
 namespace ExpenseTracking.Controllers
 {
@@ -44,7 +45,16 @@ namespace ExpenseTracking.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var categories = _context.Categories.Where(c => c.UserId == userId || c.UserId == null).ToList();
+
+            var data = new ExpenseView
+            {
+                Categories = categories,
+                Budget = new Budget()
+            };
+
+            return View(data);
         }
 
         [HttpPost]
@@ -55,7 +65,7 @@ namespace ExpenseTracking.Controllers
             {
                 _context.Add(budget);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Users", new { id = budget.UserId });
             }
             return View(budget);
         }

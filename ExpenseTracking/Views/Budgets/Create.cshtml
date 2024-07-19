@@ -1,4 +1,5 @@
-﻿@model ExpenseTracking.Models.Budget
+﻿@using System.Security.Claims
+@model ExpenseTracking.Models.ExpenseView
 
 @{
     ViewData["Title"] = "Create";
@@ -12,25 +13,30 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @{
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                <div class="form-group">
+                    <input asp-for="Budget.UserId" class="form-control" value="@userId"/>
+                    <span asp-validation-for="Budget.UserId" class="text-danger"></span>
+                </div>
+            }
+            
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
+                <label asp-for="Budget.CategoryId" class="control-label"></label>
+                <select asp-for="Budget.CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                    <option value="">Select a category</option>
+                </select>
+                <span asp-validation-for="Budget.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <input asp-for="CategoryId" class="form-control" />
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                <label asp-for="Budget.Amount" class="control-label"></label>
+                <input asp-for="Budget.Amount" class="form-control" />
+                <span asp-validation-for="Budget.Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Period" class="control-label"></label>
-                <input asp-for="Period" class="form-control" />
-                <span asp-validation-for="Period" class="text-danger"></span>
+                <label asp-for="Budget.Period" class="control-label"></label>
+                <input asp-for="Budget.Period" class="form-control" />
+                <span asp-validation-for="Budget.Period" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -39,9 +45,10 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@{
+    var userId2 = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    <a asp-controller="Users" asp-action="Details" asp-route-id="@userId2" class="btn btn-secondary">Back to Profile</a>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
