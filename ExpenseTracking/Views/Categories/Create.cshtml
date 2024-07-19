@@ -1,4 +1,5 @@
-﻿@model ExpenseTracking.Models.Category
+﻿@using System.Security.Claims
+@model ExpenseTracking.Models.Category
 
 @{
     ViewData["Title"] = "Create";
@@ -13,15 +14,26 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="Type" class="control-lable"></label>
+                <select asp-for="Type" class="form-control">
+                    <option value="">-- Select Type --</option>
+                    <option value="Expences">Expences</option>
+                    <option value="Income">Income</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
+            @{
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                <div class="form-group">
+                    <input type="hidden" asp-for="UserId" class="form-control" value="@userId" />
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

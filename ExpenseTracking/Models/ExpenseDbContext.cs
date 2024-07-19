@@ -18,10 +18,14 @@ namespace ExpenseTracking.Models
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Food" },
-                new Category { Id = 2, Name = "Transport" },
-                new Category { Id = 3, Name = "Utilities" },
-                new Category { Id = 4, Name = "Entertainment" }
+                new Category { Id = 1, Name = "Food", Type= "Expenses" },
+                new Category { Id = 2, Name = "Transport", Type = "Expenses" },
+                new Category { Id = 3, Name = "Utilities", Type = "Expenses" },
+                new Category { Id = 4, Name = "Entertainment", Type = "Expenses" },
+                new Category { Id = 5, Name = "Rental", Type = "Income" },
+                new Category { Id = 6, Name = "Salary", Type = "Income" },
+                new Category { Id = 7, Name = "Others", Type = "Income" },
+                new Category { Id = 8, Name = "Others", Type = "Expenses" }
             );
         }
 

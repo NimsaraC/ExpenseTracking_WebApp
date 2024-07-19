@@ -35,12 +35,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.User.Phone)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Currency)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Currency)
-        </dd>
     </dl>
 </div>
 <div>
@@ -57,6 +51,7 @@
         <tr>
             <th>Category</th>
             <th>Date</th>
+            <th>Type</th>
             <th>Description</th>
             <th>Amount</th>
             <th></th>
@@ -66,8 +61,9 @@
         @foreach (var item in Model?.Expenses ?? Enumerable.Empty<Expense>())
         {
             <tr>
-                <td>@item.CategoryId</td>
+                <td>@item.CategoryName</td>
                 <td>@item.Date</td>
+                <td>@item.Type</td>
                 <td>@item.Description</td>
                 <td>@item.Amount</td>
                 <td>
@@ -87,7 +83,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Category</th>
             <th>Amount</th>
             <th>Period</th>
             <th></th>
@@ -97,7 +92,6 @@
         @foreach (var item in Model?.Budgets ?? Enumerable.Empty<Budget>())
         {
             <tr>
-                <td>@item.CategoryId</td>
                 <td>@item.Amount</td>
                 <td>@item.Period</td>
                 <td>

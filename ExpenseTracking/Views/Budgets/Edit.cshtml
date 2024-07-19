@@ -1,4 +1,5 @@
-﻿@model ExpenseTracking.Models.Budget
+﻿@using System.Security.Claims
+@model ExpenseTracking.Models.ExpenseView
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,29 +13,29 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            @{
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                <div class="form-group">
+                    <input type="hidden" asp-for="Budget.UserId" class="form-control" value="@userId" />
+                    <span asp-validation-for="Budget.UserId" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
+                <label asp-for="Budget.Amount" class="control-label"></label>
+                <input asp-for="Budget.Amount" class="form-control" />
+                <span asp-validation-for="Budget.Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <input asp-for="CategoryId" class="form-control" />
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                <label asp-for="Budget.Period" class="control-label"></label>
+                <select asp-for="Budget.Period" class="form-control">
+                    <option value="">-- Select Period --</option>
+                    <option value="Month">This Month</option>
+                    <option value="Week">This Week</option>
+                </select>
+                <span asp-validation-for="Budget.Period" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Period" class="control-label"></label>
-                <input asp-for="Period" class="form-control" />
-                <span asp-validation-for="Period" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>

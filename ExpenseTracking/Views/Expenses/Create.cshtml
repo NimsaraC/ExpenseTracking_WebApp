@@ -20,20 +20,27 @@
                     <span asp-validation-for="Expense.UserID" class="text-danger"></span>
                 </div>
             }
-            
+            <div class="form-group">
+                <label asp-for="Expense.Type" class="control-lable"></label>
+                <select asp-for="Expense.Type" class="form-control">
+                    <option value="">-- Select Type --</option>
+                    <option value="Expences">Expences</option>
+                    <option value="Income">Income</option>
+                </select>
+                <span asp-validation-for="Expense.Type" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Expense.Amount" class="control-label"></label>
                 <input asp-for="Expense.Amount" class="form-control" />
                 <span asp-validation-for="Expense.Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Expense.CategoryId" class="control-label"></label>
-                <select asp-for="Expense.CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                <label asp-for="Expense.CategoryName" class="control-label"></label>
+                <select asp-for="Expense.CategoryName" class="form-control" asp-items="@(new SelectList(Model.Categories, "Name"))">
                     <option value="">Select a category</option>
                 </select>
-                <span asp-validation-for="Expense.CategoryId" class="text-danger"></span>
+                <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="Expense.Date" class="control-label"></label>
                 <input asp-for="Expense.Date" class="form-control" />

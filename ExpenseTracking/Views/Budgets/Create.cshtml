@@ -20,14 +20,6 @@
                     <span asp-validation-for="Budget.UserId" class="text-danger"></span>
                 </div>
             }
-            
-            <div class="form-group">
-                <label asp-for="Budget.CategoryId" class="control-label"></label>
-                <select asp-for="Budget.CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
-                    <option value="">Select a category</option>
-                </select>
-                <span asp-validation-for="Budget.CategoryId" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Budget.Amount" class="control-label"></label>
                 <input asp-for="Budget.Amount" class="form-control" />

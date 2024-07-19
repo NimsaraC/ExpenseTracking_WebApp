@@ -13,6 +13,5 @@ namespace ExpenseTracking.Models
         [Required]
         public string Password { get; set; }
         public string Phone { get; set; }
-        public string Currency { get; set; }
     }
 }
