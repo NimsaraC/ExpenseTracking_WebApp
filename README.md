@@ -1,4 +1,6 @@
 # ExpenseTracking
+Sure! Here’s a sample `README.md` file for your `ExpenseTracking_WebApp` GitHub repository. You can adjust it as needed to better fit your project.
+
 # ExpenseTracking_WebApp
 
 Welcome to the ExpenseTracking Web Application! This is a comprehensive web application developed using ASP.NET Core MVC to help users manage their expenses and income effectively.
@@ -34,28 +36,29 @@ To get started with the ExpenseTracking Web Application, follow these steps:
 
 1. Clone the repository:
 
+   ```bash
    git clone https://github.com/NimsaraC/ExpenseTracking_WebApp.git
-
+   ```
 
 2. Navigate to the project directory:
 
-
+   ```bash
    cd ExpenseTracking_WebApp
-
+   ```
 
 3. Restore the dependencies:
 
-
+   ```bash
    dotnet restore
-
+   ```
 
 4. Update the connection string in `appsettings.json` to match your database configuration.
 
 5. Apply the database migrations:
 
-
+   ```bash
    dotnet ef database update
-
+   ```
 
 6. Run the application:
 
