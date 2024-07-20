@@ -14,10 +14,10 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Type" class="control-lable"></label>
+                <label asp-for="Type" class="control-label"></label>
                 <select asp-for="Type" class="form-control">
                     <option value="">-- Select Type --</option>
-                    <option value="Expences">Expences</option>
+                    <option value="Expenses">Expenses</option>
                     <option value="Income">Income</option>
                 </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
@@ -29,11 +29,11 @@
             </div>
             @{
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                <div class="form-group">
-                    <input type="hidden" asp-for="UserId" class="form-control" value="@userId" />
-                    <span asp-validation-for="UserId" class="text-danger"></span>
-                </div>
             }
+            <div class="form-group">
+                <input type="hidden" asp-for="UserId" value="@userId" />
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -46,5 +46,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

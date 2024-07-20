@@ -42,7 +42,10 @@ namespace ExpenseTracking.Controllers
             var categories = await GetCategoriesByUserIdAsync(id);
             var expenses = await GetExpensesByUserIdAsync(id);
             var budgets = await GetBudgetsByUserIdAsync(id);
-            
+
+            double totalBudget = budgets.Sum(b => b.Amount);
+            double totalIncome = expenses.Where(e => e.Type == "Income").Sum(e => e.Amount);
+            double totalExpenses = expenses.Where(e => e.Type == "Expenses").Sum(e => e.Amount);
 
             var userDashboard = new UserDashboard
             {
@@ -50,11 +53,13 @@ namespace ExpenseTracking.Controllers
                 Categories = categories,
                 Expenses = expenses,
                 Budgets = budgets,
+                TotalBudget = totalBudget,
+                TotalIncome = totalIncome,
+                TotalExpenses = totalExpenses
             };
 
             return View(userDashboard);
         }
-
 
         private async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(int? userId)
         {
@@ -79,7 +84,6 @@ namespace ExpenseTracking.Controllers
 
             return await _context.Budgets.Where(r => r.UserId == userId).ToListAsync();
         }
-
 
         public IActionResult Create()
         {

@@ -58,20 +58,17 @@ namespace ExpenseTracking.Controllers
             return View(data);
         }
 
-        // POST: Expenses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserID,Amount,CategoryId,Date,Description")] Expense expense)
+        public async Task<IActionResult> Create([Bind("Id,UserID,Amount,CategoryName,Date,Description")] ExpenseView expense)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(expense);
+                _context.Add(expense.Expense);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Users" , new {id = expense.UserID});
+                return RedirectToAction("Details", "Users" , new {id = expense.Expense.UserID});
             }
-            return View(expense);
+            return View(expense.Expense);
         }
 
         // GET: Expenses/Edit/5

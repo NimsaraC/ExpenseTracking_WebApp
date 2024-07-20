@@ -1,0 +1,70 @@
+﻿/* Custom styling for the user dashboard */
+.container {
+    max-width: 1200px;
+    margin-top: 20px;
+    padding: 0 15px;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 10px 15px;
+    text-align: right;
+}
+
+.card-body dl.row dt {
+    font-weight: bold;
+}
+
+.progress {
+    height: 25px;
+    border-radius: 8px;
+    background-color: #e9ecef;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    background-color: #28a745;
+    line-height: 25px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.btn-sm {
+    font-size: 0.875rem;
+    padding: 5px 10px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table-light thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.form-check-inline {
+    margin-right: 10px;
+}
+
+.form-check-label {
+    margin-left: 5px;
+}

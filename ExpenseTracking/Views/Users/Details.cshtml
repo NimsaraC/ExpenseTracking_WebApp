@@ -3,129 +3,170 @@
 
 @{
     ViewData["Title"] = "Details";
+    var remainingBudget = Model.TotalBudget + Model.TotalIncome - Model.TotalExpenses;
+    var totalBudget = Model.TotalBudget + Model.TotalIncome;
+    var remainingPercentage = totalBudget > 0 ? (remainingBudget / totalBudget) * 100 : 0;
+    var hasBudget = Model.Budgets.Any(); // Check if there are any budgets
+    var firstBudget = Model.Budgets.FirstOrDefault(); // Get the first budget if exists
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <h1 class="text-center">User Dashboard</h1>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Password)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Password)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Phone)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Phone)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.User.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>User Information</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.User.Name)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.User.Name)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.User.Email)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.User.Email)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model?.User.Id">Edit</a>
+            <a class="btn btn-secondary btn-sm" asp-action="Index">Back to List</a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Budget Overview</h4>
+        </div>
+        <div class="card-body">
+            @if (hasBudget)
+            {
+                <a class="btn btn-success btn-sm mb-3" asp-controller="Budgets" asp-action="Edit" asp-route-id="@firstBudget.Id">Edit Budget</a>
+            }
+            else
+            {
+                <a class="btn btn-success btn-sm mb-3" asp-controller="Budgets" asp-action="Create">Add Budget</a>
+            }
+            <dl class="row">
+                <dt class="col-sm-4">Total Budget</dt>
+                <dd class="col-sm-8">@Model.TotalBudget</dd>
+                <dt class="col-sm-4">Total Income</dt>
+                <dd class="col-sm-8">@Model.TotalIncome</dd>
+                <dt class="col-sm-4">Total Expenses</dt>
+                <dd class="col-sm-8">@Model.TotalExpenses</dd>
+                <dt class="col-sm-4">Remaining Budget</dt>
+                <dd class="col-sm-8">@remainingBudget</dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: @remainingPercentage%" aria-valuenow="@remainingPercentage" aria-valuemin="0" aria-valuemax="100">
+                    @remainingPercentage.ToString("F2")%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Expenses</h4>
+        </div>
+        <div class="card-body">
+            <a class="btn btn-success btn-sm mb-3" asp-controller="Expenses" asp-action="Create">Add New Expense</a>
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model?.Expenses ?? Enumerable.Empty<Expense>())
+                    {
+                        <tr>
+                            <td>@item.CategoryName</td>
+                            <td>@item.Date.ToShortDateString()</td>
+                            <td>@item.Type</td>
+                            <td>@item.Description</td>
+                            <td>@item.Amount</td>
+                            <td>
+                                <a class="btn btn-info btn-sm" asp-controller="Expenses" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a class="btn btn-primary btn-sm" asp-controller="Expenses" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                <a class="btn btn-danger btn-sm" asp-controller="Expenses" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Categories</h4>
+        </div>
+        <div class="card-body">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="all" name="categoryType" value="" checked>
+                <label class="form-check-label" for="all">All</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="expense" name="categoryType" value="Expenses">
+                <label class="form-check-label" for="expense">Expenses</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="income" name="categoryType" value="Income">
+                <label class="form-check-label" for="income">Income</label>
+            </div>
+            <a class="btn btn-success btn-sm mb-3" asp-controller="Categories" asp-action="Create">Add New Category</a>
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                    @foreach (var item in Model?.Categories ?? Enumerable.Empty<Category>())
+                    {
+                        <tr class="categoryRow" data-category-type="@item.Type">
+                            <td>@item.Name</td>
+                            <td>
+                                <a class="btn btn-info btn-sm" asp-controller="Categories" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a class="btn btn-danger btn-sm" asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<h3>Expenses</h3>
-<div>
-    <a asp-controller="Expenses" asp-action="Create">Add New Expense</a>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model?.Expenses ?? Enumerable.Empty<Expense>())
-        {
-            <tr>
-                <td>@item.CategoryName</td>
-                <td>@item.Date</td>
-                <td>@item.Type</td>
-                <td>@item.Description</td>
-                <td>@item.Amount</td>
-                <td>
-                    <a asp-controller="Expenses" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="Expenses" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-controller="Expenses" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[name="categoryType"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                var selectedType = this.value;
+                var rows = document.querySelectorAll('.categoryRow');
 
-<h3>Budgets</h3>
-<div>
-    <a asp-controller="Budgets" asp-action="Create">Add New Budgets</a>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Amount</th>
-            <th>Period</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model?.Budgets ?? Enumerable.Empty<Budget>())
-        {
-            <tr>
-                <td>@item.Amount</td>
-                <td>@item.Period</td>
-                <td>
-                    <a asp-controller="Budgets" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="Budgets" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-controller="Budgets" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<h3>Categories</h3>
-<div>
-    <a asp-controller="Categories" asp-action="Create">Delete</a>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model?.Categories ?? Enumerable.Empty<Category>())
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>
-                    <a asp-controller="Categories" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="Categories" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                rows.forEach(function (row) {
+                    if (selectedType === '' || row.getAttribute('data-category-type') === selectedType) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}
