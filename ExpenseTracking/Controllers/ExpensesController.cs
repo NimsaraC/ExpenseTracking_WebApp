@@ -142,7 +142,7 @@ namespace ExpenseTracking.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Users", new { id = expense.UserID });
             }
 
             // If the model state is not valid, reload categories for the view
