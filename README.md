@@ -1,6 +1,4 @@
 # ExpenseTracking
-Sure! Here’s a sample `README.md` file for your `ExpenseTracking_WebApp` GitHub repository. You can adjust it as needed to better fit your project.
-
 # ExpenseTracking_WebApp
 
 Welcome to the ExpenseTracking Web Application! This is a comprehensive web application developed using ASP.NET Core MVC to help users manage their expenses and income effectively.
