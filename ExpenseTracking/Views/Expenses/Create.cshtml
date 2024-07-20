@@ -2,66 +2,72 @@
 @model ExpenseTracking.Models.ExpenseView
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Expense";
 }
 
-<h1>Create</h1>
+<h1>Create Expense</h1>
 
 <h4>Expense</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @{
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                <div class="form-group">
-                    <input type="hidden" asp-for="Expense.UserID" class="form-control" value="@userId" />
-                    <span asp-validation-for="Expense.UserID" class="text-danger"></span>
-                </div>
-            }
-            <div class="form-group">
-                <label asp-for="Expense.Type" class="control-label"></label>
-                <select asp-for="Expense.Type" class="form-control" id="expenseType">
-                    <option value="">-- Select Type --</option>
-                    <option value="Expenses">Expenses</option>
-                    <option value="Income">Income</option>
-                </select>
-                <span asp-validation-for="Expense.Type" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    @{
+                        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                        <div class="form-group">
+                            <input type="hidden" asp-for="Expense.UserID" class="form-control" value="@userId" />
+                            <span asp-validation-for="Expense.UserID" class="text-danger"></span>
+                        </div>
+                    }
+                    <div class="form-group mb-3">
+                        <label asp-for="Expense.Type" class="form-label"></label>
+                        <select asp-for="Expense.Type" class="form-control" id="expenseType">
+                            <option value="">-- Select Type --</option>
+                            <option value="Expenses">Expenses</option>
+                            <option value="Income">Income</option>
+                        </select>
+                        <span asp-validation-for="Expense.Type" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Expense.CategoryName" class="form-label"></label>
+                        <select asp-for="Expense.CategoryName" class="form-control" id="categorySelect">
+                            <option value="">-- Select Category --</option>
+                        </select>
+                        <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Expense.Amount" class="form-label"></label>
+                        <input asp-for="Expense.Amount" class="form-control" />
+                        <span asp-validation-for="Expense.Amount" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Expense.Date" class="form-label"></label>
+                        <input asp-for="Expense.Date" class="form-control" />
+                        <span asp-validation-for="Expense.Date" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Expense.Description" class="form-label"></label>
+                        <input asp-for="Expense.Description" class="form-control" />
+                        <span asp-validation-for="Expense.Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="submit" value="Create" class="btn btn-primary btn-block" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Expense.CategoryName" class="control-label"></label>
-                <select asp-for="Expense.CategoryName" class="form-control" id="categorySelect">
-                    <option value="">-- Select Category --</option>
-                </select>
-                <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Expense.Amount" class="control-label"></label>
-                <input asp-for="Expense.Amount" class="form-control" />
-                <span asp-validation-for="Expense.Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Expense.Date" class="control-label"></label>
-                <input asp-for="Expense.Date" class="form-control" />
-                <span asp-validation-for="Expense.Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Expense.Description" class="control-label"></label>
-                <input asp-for="Expense.Description" class="form-control" />
-                <span asp-validation-for="Expense.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-@{
-    var userId2 = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    <a asp-controller="Users" asp-action="Details" asp-route-id="@userId2" class="btn btn-secondary">Back to Profile</a>
-}
+<div class="text-center mt-3">
+    @{
+        var userId2 = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        <a asp-controller="Users" asp-action="Details" asp-route-id="@userId2" class="btn btn-secondary">Back to Profile</a>
+    }
+</div>
 
 @section Scripts {
     <script>
@@ -94,7 +100,7 @@
                 categories.forEach(function (category) {
                     const option = document.createElement('option');
                     option.value = category.name;
-                    option.text = category.name // This sets the text displayed in the dropdown
+                    option.text = category.name;
                     categorySelect.add(option);
                 });
 
@@ -108,3 +114,60 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        color: #007bff;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .card {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        border-radius: 5px;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        border-radius: 5px;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+    .text-center {
+        margin-top: 20px;
+    }
+</style>

@@ -10,8 +10,83 @@
     var firstBudget = Model.Budgets.FirstOrDefault(); // Get the first budget if exists
 }
 
+<style>
+    .card-header h4 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .card-body dl {
+        margin-bottom: 0;
+    }
+
+    .card-body dt {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .card-body dd {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+        color: #6c757d;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+    }
+
+        .card-footer .btn {
+            margin-left: 0.5rem;
+        }
+
+    .progress {
+        height: 25px;
+    }
+
+    .progress-bar {
+        line-height: 25px;
+        color: #fff;
+        text-align: center;
+        background-color: #28a745;
+    }
+
+    .table th {
+        background-color: #e9ecef;
+        color: #495057;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .form-check-inline .form-check-input {
+        margin-right: 0.5rem;
+    }
+
+    .btn-success, .btn-primary {
+        margin: 0.5rem 0;
+    }
+
+    .btn-secondary {
+        margin: 0.5rem 0;
+    }
+
+    .pie-chart-container {
+        text-align: center;
+    }
+
+        .pie-chart-container canvas {
+            max-width: 100%;
+            height: 100px; /* Smaller height */
+            width: 100px; /* Smaller width */
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+</style>
+
 <div class="container mt-4">
-    <h1 class="text-center">User Dashboard</h1>
 
     <div class="card mb-4">
         <div class="card-header">
@@ -34,8 +109,8 @@
             </dl>
         </div>
         <div class="card-footer text-end">
-            <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model?.User.Id">Edit</a>
-            <a class="btn btn-secondary btn-sm" asp-action="Index">Back to List</a>
+            <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model?.User.Id">Edit Profile</a>
+            <a class="btn btn-secondary btn-sm" asp-action="LogOut">Log Out</a>
         </div>
     </div>
 
@@ -44,42 +119,56 @@
             <h4>Budget Overview</h4>
         </div>
         <div class="card-body">
-            @if (hasBudget)
-            {
-                <a class="btn btn-success btn-sm mb-3" asp-controller="Budgets" asp-action="Edit" asp-route-id="@firstBudget.Id">Edit Budget</a>
-            }
-            else
-            {
-                <a class="btn btn-success btn-sm mb-3" asp-controller="Budgets" asp-action="Create">Add Budget</a>
-            }
-            <dl class="row">
-                <dt class="col-sm-4">Total Budget</dt>
-                <dd class="col-sm-8">@Model.TotalBudget</dd>
-                <dt class="col-sm-4">Total Income</dt>
-                <dd class="col-sm-8">@Model.TotalIncome</dd>
-                <dt class="col-sm-4">Total Expenses</dt>
-                <dd class="col-sm-8">@Model.TotalExpenses</dd>
-                <dt class="col-sm-4">Remaining Budget</dt>
-                <dd class="col-sm-8">@remainingBudget</dd>
-            </dl>
-        </div>
-        <div class="card-footer">
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: @remainingPercentage%" aria-valuenow="@remainingPercentage" aria-valuemin="0" aria-valuemax="100">
-                    @remainingPercentage.ToString("F2")%
+            <div class="row">
+                <!-- Budget Details Column -->
+                <div class="col-md-9">
+                    <div class="mb-3">
+                        @if (hasBudget)
+                        {
+                            <a class="btn btn-success btn-sm mb-3" asp-controller="Budgets" asp-action="Edit" asp-route-id="@firstBudget.Id">Edit Budget</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-success btn-sm mb-3" asp-controller="Budgets" asp-action="Create">Add Budget</a>
+                        }
+                    </div>
+                    <dl class="row">
+                        <dt class="col-sm-4">Total Budget</dt>
+                        <dd class="col-sm-8">$@Model.TotalBudget</dd>
+                        <dt class="col-sm-4">Total Income</dt>
+                        <dd class="col-sm-8">$@Model.TotalIncome</dd>
+                        <dt class="col-sm-4">Total Expenses</dt>
+                        <dd class="col-sm-8">$@Model.TotalExpenses</dd>
+                        <dt class="col-sm-4">Remaining Budget</dt>
+                        <dd class="col-sm-8">$@remainingBudget</dd>
+                    </dl>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @remainingPercentage%" aria-valuenow="@remainingPercentage" aria-valuemin="0" aria-valuemax="100">
+                            @remainingPercentage.ToString("F2")%
+                        </div>
+                    </div>
+                </div>
+                <!-- Pie Chart Column -->
+                <div class="col-md-3">
+                    <div class="pie-chart-container">
+                        <h5>Budget Distribution</h5>
+                        <canvas id="budgetPieChart"></canvas>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="card-footer">
         </div>
     </div>
 
     <div class="card mb-4">
         <div class="card-header">
-            <h4>Expenses</h4>
+            <h4>Expenses and Income</h4>
         </div>
         <div class="card-body">
-            <a class="btn btn-success btn-sm mb-3" asp-controller="Expenses" asp-action="Create">Add New Expense</a>
+            <a class="btn btn-success btn-sm mb-3" asp-controller="Expenses" asp-action="Create">Add New</a>
             <table class="table table-hover">
-                <thead class="table-light">
+                <thead>
                     <tr>
                         <th>Category</th>
                         <th>Date</th>
@@ -97,10 +186,9 @@
                             <td>@item.Date.ToShortDateString()</td>
                             <td>@item.Type</td>
                             <td>@item.Description</td>
-                            <td>@item.Amount</td>
+                            <td>$@item.Amount</td>
                             <td>
                                 <a class="btn btn-info btn-sm" asp-controller="Expenses" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                                <a class="btn btn-primary btn-sm" asp-controller="Expenses" asp-action="Details" asp-route-id="@item.Id">Details</a>
                                 <a class="btn btn-danger btn-sm" asp-controller="Expenses" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             </td>
                         </tr>
@@ -129,7 +217,7 @@
             </div>
             <a class="btn btn-success btn-sm mb-3" asp-controller="Categories" asp-action="Create">Add New Category</a>
             <table class="table table-hover">
-                <thead class="table-light">
+                <thead>
                     <tr>
                         <th>Category</th>
                         <th>Actions</th>
@@ -166,6 +254,50 @@
                         row.style.display = 'none';
                     }
                 });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('budgetPieChart').getContext('2d');
+
+            // Assuming you have categories data in the model
+            var categoryLabels = @Html.Raw(Json.Serialize(Model.Expenses.Select(c => c.CategoryName)));
+            var categoryData = @Html.Raw(Json.Serialize(Model.Expenses.Select(c => c.Amount)));
+
+            var budgetPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'Budget Distribution',
+                        data: categoryData,
+                        backgroundColor: [
+                            '#ff6384', // Custom colors for each category
+                            '#36a2eb',
+                            '#cc65fe',
+                            '#ffce56',
+                            // Add more colors if needed
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.label + ': $' + tooltipItem.raw;
+                                }
+                            }
+                        }
+                    }
+                }
             });
         });
     </script>

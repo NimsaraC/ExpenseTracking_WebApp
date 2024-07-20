@@ -59,7 +59,7 @@ namespace ExpenseTracking.Controllers
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Users", new { id = category.UserId });
             }
             return View(category);
         }
@@ -110,7 +110,7 @@ namespace ExpenseTracking.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Users", new { id = category.UserId });
             }
             return View(category);
         }
@@ -145,7 +145,7 @@ namespace ExpenseTracking.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Users", new { id = category.UserId });
         }
 
         private bool CategoryExists(int id)

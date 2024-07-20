@@ -188,7 +188,7 @@ namespace ExpenseTracking.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Users", new { id = user.Id });
         }
 
         private bool UserExists(int id)
@@ -228,6 +228,12 @@ namespace ExpenseTracking.Controllers
                 }
             }
             return View();
+        }
+
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -1,8 +1,42 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <div class="hero-section text-center py-5">
+        <div class="container">
+            <h1 class="display-3">Welcome to ExpenseTracking</h1>
+            <p class="lead">Your go-to solution for tracking and managing your finances.</p>
+            <p>With ExpenseTracking, you can:</p>
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check-circle"></i> Monitor your expenses and income.</li>
+                <li><i class="fas fa-check-circle"></i> Set and manage your budget efficiently.</li>
+            </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                <a class="btn btn-primary btn-lg mt-4" asp-controller="Users" asp-action="Details" asp-route-id="@userId">Enter App</a>
+            }
+            else
+            {
+                <a class="btn btn-primary btn-lg mt-4" asp-controller="Users" asp-action="Login">Login</a>
+            }
+            
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

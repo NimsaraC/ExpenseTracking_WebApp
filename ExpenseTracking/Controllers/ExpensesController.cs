@@ -196,7 +196,7 @@ namespace ExpenseTracking.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Users", new { id = expense.UserID });
         }
 
         private bool ExpenseExists(int id)
