@@ -21,25 +21,25 @@
                 </div>
             }
             <div class="form-group">
-                <label asp-for="Expense.Type" class="control-lable"></label>
-                <select asp-for="Expense.Type" class="form-control">
+                <label asp-for="Expense.Type" class="control-label"></label>
+                <select asp-for="Expense.Type" class="form-control" id="expenseType">
                     <option value="">-- Select Type --</option>
-                    <option value="Expences">Expences</option>
+                    <option value="Expenses">Expenses</option>
                     <option value="Income">Income</option>
                 </select>
                 <span asp-validation-for="Expense.Type" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Expense.CategoryName" class="control-label"></label>
+                <select asp-for="Expense.CategoryName" class="form-control" id="categorySelect">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Expense.Amount" class="control-label"></label>
                 <input asp-for="Expense.Amount" class="form-control" />
                 <span asp-validation-for="Expense.Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Expense.CategoryName" class="control-label"></label>
-                <select asp-for="Expense.CategoryName" class="form-control">
-                    <option value="">Select a category</option>
-                </select>
-                <span asp-validation-for="Expense.CategoryName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Expense.Date" class="control-label"></label>
@@ -64,5 +64,47 @@
 }
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const expenseType = document.getElementById('expenseType');
+            const categorySelect = document.getElementById('categorySelect');
+
+            // Parse categories data
+            const expenseCategories = @Html.Raw(Json.Serialize(Model.ExpenseCategories));
+            const incomeCategories = @Html.Raw(Json.Serialize(Model.IncomeCategories));
+
+            // Log categories to the console for debugging
+            console.log('Expense Categories:', expenseCategories);
+            console.log('Income Categories:', incomeCategories);
+
+            expenseType.addEventListener('change', function () {
+                const type = this.value;
+                let categories = [];
+
+                if (type === 'Expenses') {
+                    categories = expenseCategories;
+                } else if (type === 'Income') {
+                    categories = incomeCategories;
+                }
+
+                // Clear previous options
+                categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+                // Add new options
+                categories.forEach(function (category) {
+                    const option = document.createElement('option');
+                    option.value = category.name;
+                    option.text = category.name // This sets the text displayed in the dropdown
+                    categorySelect.add(option);
+                });
+
+                // Log the selected category options for debugging
+                console.log('Selected Categories:', categories);
+            });
+        });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

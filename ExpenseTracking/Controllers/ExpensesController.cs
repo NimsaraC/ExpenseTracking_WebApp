@@ -47,30 +47,40 @@ namespace ExpenseTracking.Controllers
         public IActionResult Create()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var categories = _context.Categories.Where(c => c.UserId == userId || c.UserId == null).ToList();
+            var allCategories = _context.Categories
+                .Where(c => c.UserId == userId || c.UserId == null)
+                .ToList();
+
+            var expenseCategories = allCategories.Where(c => c.Type == "Expenses").ToList();
+            var incomeCategories = allCategories.Where(c => c.Type == "Income").ToList();
 
             var data = new ExpenseView
             {
-                Categories = categories,
-                Expense = new Expense()
+                Expense = new Expense(),
+                Categories = allCategories,
+                ExpenseCategories = expenseCategories,
+                IncomeCategories = incomeCategories
             };
 
             return View(data);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserID,Amount,CategoryName,Date,Description")] ExpenseView expense)
+        public async Task<IActionResult> Create([Bind("Id,UserID,Amount,CategoryName,Date,Description,Type")] Expense expense)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(expense.Expense);
+                _context.Add(expense);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Users" , new {id = expense.Expense.UserID});
+                return RedirectToAction("Details", "Users", new { id = expense.UserID });
             }
-            return View(expense.Expense);
+            return View(expense);
         }
 
+
+        // GET: Expenses/Edit/5
         // GET: Expenses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -84,15 +94,30 @@ namespace ExpenseTracking.Controllers
             {
                 return NotFound();
             }
-            return View(expense);
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var allCategories = _context.Categories
+                .Where(c => c.UserId == userId || c.UserId == null)
+                .ToList();
+
+            var expenseCategories = allCategories.Where(c => c.Type == "Expenses").ToList();
+            var incomeCategories = allCategories.Where(c => c.Type == "Income").ToList();
+
+            var viewModel = new ExpenseView
+            {
+                Expense = expense,
+                Categories = allCategories,
+                ExpenseCategories = expenseCategories,
+                IncomeCategories = incomeCategories
+            };
+
+            return View(viewModel);
         }
 
         // POST: Expenses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserID,Amount,CategoryId,Date,Description")] Expense expense)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserID,Amount,CategoryName,Date,Description,Type")] Expense expense)
         {
             if (id != expense.Id)
             {
@@ -119,8 +144,27 @@ namespace ExpenseTracking.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(expense);
+
+            // If the model state is not valid, reload categories for the view
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var allCategories = _context.Categories
+                .Where(c => c.UserId == userId || c.UserId == null)
+                .ToList();
+
+            var expenseCategories = allCategories.Where(c => c.Type == "Expenses").ToList();
+            var incomeCategories = allCategories.Where(c => c.Type == "Income").ToList();
+
+            var viewModel = new ExpenseView
+            {
+                Expense = expense,
+                Categories = allCategories,
+                ExpenseCategories = expenseCategories,
+                IncomeCategories = incomeCategories
+            };
+
+            return View(viewModel);
         }
+
 
         // GET: Expenses/Delete/5
         public async Task<IActionResult> Delete(int? id)
